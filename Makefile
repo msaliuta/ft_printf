@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: msaliuta <msaliuta@student.42.fr>          +#+  +:+       +#+         #
+#    By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/15 17:47:09 by msaliuta          #+#    #+#              #
-#    Updated: 2019/07/03 07:08:40 by msaliuta         ###   ########.fr        #
+#    Updated: 2019/07/06 19:07:56 by msaliuta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,28 +17,8 @@ IDIR	=	inc
 SDIR	=	src
 ODIR	=	obj
 SRCS	=	check_settings\
-			ft_atoi\
-			ft_bzero\
-			ft_itoa\
-			ft_itoa_base\
-			ft_ltoa\
-			ft_ltoa_base\
 			ft_printf\
-			ft_strchr\
-			ft_strcpy\
-			ft_strdup\
-			ft_strjoin\
-			ft_strlen\
-			ft_strlower\
-			ft_strncmp\
-			ft_strnew\
-			ft_strsub\
-			ft_uitoa\
-			ft_uitoa_base\
-			ft_ultoa\
-			ft_ultoa_base\
 			ftoa_prec_f\
-			get_flags\
 			get_mod\
 			get_prec\
 			get_prec_num_f\
@@ -87,6 +67,8 @@ COBJ	=	$(addprefix $(ODIR)/, $(addsuffix .o, $(SRCS)))
 all: $(NAME)
 
 $(NAME): $(COBJ)
+	@make -C ./libft
+	@cp ./libft/libft.a ./$(NAME)
 	@ar rc $(NAME) $(COBJ)
 	@echo "\n$(NAME) created"
 
@@ -100,9 +82,11 @@ $(ODIR):
 
 clean:
 	@rm -rf $(ODIR)
+	@make -C ./libft clean
 
 fclean: clean
 	@rm -rf $(NAME)
+	@make -C ./libft fclean
 
 re: fclean all
 
