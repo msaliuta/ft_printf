@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/15 18:17:20 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/06 19:17:17 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 14:29:36 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,26 +14,28 @@
 # define FT_PRINTF_H
 
 # include <stdint.h>
-# include <unistd.h>
 # include <stdlib.h>
-# include <stdarg.h>
-# include "../Libft/libft.h"
+# include <unistd.h>
+# include "../libftprintf/libft.h"
 # include <wchar.h>
 # include <limits.h>
+# include <stdarg.h>
 
+# define CHECK_PCNT(i) (i == '%')
+# define FLAGS " 0123456789Lhjltz#*+-."
+# define CONV_FLAGS " 0#+-"
 # define INUM(i) (i >= '0' && i <= '9')
 # define INUM1(i) (i >= '1' && i <= '9')
-# define IPRSNT(i) (i == '%')
-# define IINT(i) (i == 'd' || i == 'i')
-# define IUINT(i) (i == 'u' || i == 'D' || i == 'U')
-# define ICHR(i) (i == 'c' || i == 's')
-# define ILCHR(i) (i == 'C' || i == 'S')
-# define IPRC(i) (i == 'F' || i == 'A' || i == 'G'|| i == 'E')
-# define ILPRC(i) (i == 'f' || i == 'a' || i == 'g'|| i == 'e')
-# define IHEX(i) (i == 'b' || i == 'o' || i == 'x')
-# define ILHEX(i) (i == 'B' || i == 'O' || i == 'X')
+# define CHECK_BONUS(i) (i == 'r')
+# define CHECK_INT(i) (i == 'd' || i == 'i')
+# define CHECK_UINT(i) (i == 'u' || i == 'D' || i == 'U')
+# define CHECK_CHR(i) (i == 'c' || i == 's')
+# define CHECK_LCHR(i) (i == 'C' || i == 'S')
+# define CHECK_PRC(i) (i == 'F' || i == 'A' || i == 'G'|| i == 'E')
+# define CHECK_LPRC(i) (i == 'f' || i == 'a' || i == 'g'|| i == 'e')
+# define CHECK_HEX(i) (i == 'b' || i == 'o' || i == 'x')
+# define CHECK_LHEX(i) (i == 'B' || i == 'O' || i == 'X')
 # define IN(i) (i == 'n')
-# define I_FLAG " 0123456789Lhjltz#*+-."
 
 typedef struct	s_pf_tag
 {
@@ -78,17 +80,18 @@ typedef	struct	s_pf_env
 	int			ret;
 }				t_pf_env;
 
-int				ft_printf(const char *restrict fmt, ...);
-void			start_fpf(const char *restrict fmt, t_pf_env *o);
-void			parse_flags(const char *restrict fmt, t_pf_env *o);
+int				ft_printf(const char *restrict frmt, ...);
+void			start_fpf(const char *restrict frmt, t_pf_env *o);
+void			parse_flags(const char *restrict frmt, t_pf_env *o);
+void			parce_modif(const char *restrict frmt, t_pf_env *o);
+void			check_conv_flag(const char *restrict frmt, t_pf_env *o);
+
+void			parse_mfw(const char *restrict fmt, t_pf_env *o);
+void			parse_size_spec(const char *restrict fmt, t_pf_env *o);
+void			check_width(t_pf_env *o);
+void			check_prec(const char *restrict fmt, t_pf_env *o);
+
 void			init_env(t_pf_env *o);
-void			init_flags(t_pf_flag *flag);
-void			get_tags(const char *restrict fmt, t_pf_env *o);
-void			get_prec(const char *restrict fmt, t_pf_env *o);
-void			get_width(t_pf_env *o);
-void			get_mods(const char *restrict fmt, t_pf_env *o);
-void			get_specs(const char *restrict fmt, t_pf_env *o);
-void			get_specs_01(const char *restrict fmt, t_pf_env *o);
 void			init_char_arg(t_pf_env *o, int *tmp);
 void			init_str_arg(t_pf_env *o, char **tmp);
 void			init_int_arg(t_pf_env *o, long *tmp);
@@ -106,7 +109,7 @@ void			spec_base(t_pf_env *o, char type);
 void			spec_return(t_pf_env *o);
 void			spec_ptraddr(t_pf_env *o, char type);
 void			spec_non_printable(t_pf_env *o);
-void			sp_percent(t_pf_env *o);
+void			spec_percent(t_pf_env *o);
 void			print_digit(t_pf_env *o);
 void			print_digit_width(t_pf_env *o);
 void			print_digit_sign(t_pf_env *o);
@@ -160,7 +163,6 @@ void			print_non_printable(t_pf_env *o);
 void			print_zero_to_ten(t_pf_env *o, char c);
 void			print_ten_to_twenty(t_pf_env *o, char c);
 void			print_twenty_to_thirty(t_pf_env *o, char c);
-void			print_dice(t_pf_env *o);
 void			check_set(const char *restrict fmt, t_pf_env *o);
 
 #endif

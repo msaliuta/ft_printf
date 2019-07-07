@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/30 12:05:22 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/06 19:18:11 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 13:28:48 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,19 @@ void	start_fpf(const char *restrict frmt, t_pf_env *o)
 {
 	while (frmt[o->i])
 	{
-		if (IPRSNT(frmt[o->i]) && !frmt[o->i + 1])
+		if (CHECK_PCNT(frmt[o->i]) && !frmt[o->i + 1])
 		{
 			o->ret = 0;
 			break ;
 		}
-		else if (IPRSNT(frmt[o->i]) && !IPRSNT(frmt[o->i + 1]))
+		else if (CHECK_PCNT(frmt[o->i]) && !CHECK_PCNT(frmt[o->i + 1]))
 		{
 			++o->i;
-			get_tags(frmt, o);
-			get_flags(frmt, o);
-			get_specs(frmt, o);
+			parse_mfw(frmt, o);
+			parse_flags(frmt, o);
+			parse_size_spec(frmt, o);
 		}
-		else if (IPRSNT(frmt[o->i]) && IPRSNT(frmt[o->i + 1]))
+		else if (CHECK_PCNT(frmt[o->i]) && CHECK_PCNT(frmt[o->i + 1]))
 		{
 			o->ret += write(o->fd, "%", 1);
 			o->i += 2;
@@ -52,19 +52,16 @@ void	start_fpf(const char *restrict frmt, t_pf_env *o)
 
 void	parse_flags(const char *restrict frmt, t_pf_env *o)
 {
-	while (ft_strchr(I_FLAG, frmt[o->i]))
+	while (ft_strchr(FLAGS, frmt[o->i]))
 	{
-		frmt[o->i] == ' ' ? o->flag.sps = 1 : 0;
-		frmt[o->i] == '-' ? o->flag.minus = 1 : 0;
-		frmt[o->i] == '+' ? o->flag.plus = 1 : 0;
-		frmt[o->i] == '#' ? o->flag.hash = 1 : 0;
-		frmt[o->i] == '0' ? o->flag.zero = 1 : 0;
 		if (frmt[o->i] >= 'L' && frmt[o->i] <= 'z')
-			get_mods(frmt, o);
+			parce_modif(frmt, o);
+		if (ft_strchr(CONV_FLAGS, frmt[o->i]))
+			check_conv_flag(frmt, o);
 		if (frmt[o->i] == '*')
-			get_width(o);
+			check_width(o);	
 		if (frmt[o->i] == '.')
-			get_prec(frmt, o);
+			check_prec(frmt, o);
 		else if (INUM1(frmt[o->i]) && o->flag.prec < 0)
 		{
 			o->flag.width = ft_atoi(frmt + o->i);
@@ -74,4 +71,44 @@ void	parse_flags(const char *restrict frmt, t_pf_env *o)
 		else
 			++o->i;
 	}
+}
+
+void	check_conv_flag(const char *restrict frmt, t_pf_env *o)
+{
+	if (frmt[o->i] == ' ')
+		o->flag.sps = 1;
+	if (frmt[o->i] == '-')
+		o->flag.minus = 1;
+	if (frmt[o->i] == '+')
+		o->flag.plus = 1;
+	if (frmt[o->i] == '#')
+		o->flag.hash = 1;
+	if (frmt[o->i] == '0')
+		o->flag.zero = 1;
+}
+
+void	parce_modif(const char *restrict frmt, t_pf_env *o)
+{
+	if (frmt[o->i] == 'h' && frmt[o->i + 1] != 'h')
+		o->mod = pf_h;
+	else if (frmt[o->i] == 'h' && frmt[o->i + 1] == 'h')
+	{
+		o->mod = pf_hh;
+		++o->i;
+	}
+	else if (frmt[o->i] == 'l' && frmt[o->i + 1] != 'l')
+		o->mod = pf_l;
+	else if (frmt[o->i] == 'l' && frmt[o->i + 1] == 'l')
+	{
+		o->mod = pf_ll;
+		++o->i;
+	}
+	else if (frmt[o->i] == 'z')
+		o->mod = pf_z;
+	else if (frmt[o->i] == 'j')
+		o->mod = pf_j;
+	else if (frmt[o->i] == 'L')
+		o->mod = pf_L;
+	else if (frmt[o->i] == 't')
+		o->mod = pf_t;
 }

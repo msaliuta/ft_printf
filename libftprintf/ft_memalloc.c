@@ -1,36 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_tags.c                                         :+:      :+:    :+:   */
+/*   ft_memalloc.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/03 04:25:10 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/03 04:25:10 by msaliuta         ###   ########.fr       */
+/*   Created: 2018/10/30 18:32:38 by msaliuta          #+#    #+#             */
+/*   Updated: 2018/10/30 18:32:58 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
+#include <stdlib.h>
 
-void	get_tags(const char *restrict fmt, t_pf_env *e)
+void	*ft_memalloc(size_t size)
 {
-	int	i;
-	int tmp;
+	size_t	i;
+	char	*ptr;
 
-	init_flags(&e->flag);
-	e->mod = pf_nomod;
-	e->tag.tag = 0;
-	i = 0;
-	if (INUM(fmt[e->i]))
-	{
-		tmp = ft_atoi(fmt + e->i);
-		while (INUM(fmt[e->i + i]))
-			i++;
-		if (fmt[e->i + i] == '$')
-		{
-			e->tag.tag = 1;
-			e->tag.pos = tmp;
-			e->i += i + 1;
-		}
-	}
+	i = -1;
+	ptr = (char*)malloc(size);
+	if (ptr)
+		while (++i < size)
+			ptr[i] = 0;
+	else
+		return (NULL);
+	return (ptr);
 }

@@ -1,37 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_dice.c                                       :+:      :+:    :+:   */
+/*   ft_lstmap.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/03 04:25:15 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/03 04:25:15 by msaliuta         ###   ########.fr       */
+/*   Created: 2018/10/30 18:32:03 by msaliuta          #+#    #+#             */
+/*   Updated: 2018/10/30 18:32:05 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "libft.h"
 
-void	print_dice(t_pf_env *e)
+t_list		*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem))
 {
-	long	ran;
-	char	nb;
-	double	d;
-	int		i;
+	t_list		*new;
+	t_list		*list;
 
-	init_int_arg(e, &ran);
-	i = 0;
-	d = (double)ran * 1.23456;
-	while (i++ < 10)
+	if (!lst)
+		return (NULL);
+	list = f(lst);
+	new = list;
+	while (lst->next)
 	{
-		d /= 12.34;
-		d += ((long)d % 6 == 2 ? 1 : -1);
-		d = (long)d;
-		d += ((long)d % 6 == 4 ? 1 : -1);
-		d *= 21.43;
-		d += ((long)d % 6 == 0 ? 1 : -1);
+		lst = lst->next;
+		if (!(list->next = f(lst)))
+		{
+			free(list->next);
+			return (NULL);
+		}
+		list = list->next;
 	}
-	nb = ((long)d % 6) + 49;
-	e->ret += write(e->fd, &nb, 1);
-	++e->i;
+	return (new);
 }
