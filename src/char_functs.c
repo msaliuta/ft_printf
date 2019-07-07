@@ -1,25 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_char.c                                       :+:      :+:    :+:   */
+/*   char_functs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:14 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 14:44:55 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 17:50:24 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	print_char_width(t_pf_env *e)
+void	char_for_ptint(t_pf_env *e, int n)
 {
-	while (e->flag.width-- > 1)
+	if (n == 1)
 	{
-		if (e->flag.zero == 1)
-			e->ret += write(e->fd, "0", 1);
-		else
-			e->ret += write(e->fd, " ", 1);
+		while (e->flag.width-- > 1)
+		{
+			if (e->flag.zero == 1)
+				e->ret += write(e->fd, "0", 1);
+			else
+				e->ret += write(e->fd, " ", 1);
+		}
+	}
+	else
+	{
+		while (e->flag.width-- > 1)
+		{
+			if (e->flag.zero == 1)
+				e->ret += write(e->fd, "0", 1);
+			else
+				e->ret += write(e->fd, " ", 1);
+		}
+		++e->i;
 	}
 }
 
@@ -34,7 +48,7 @@ void	spec_char(t_pf_env *e, char type)
 	{
 		init_str_arg(e, &stmp);
 		if (stmp == NULL)
-			return (print_null_str(e));
+			return (str_for_print(e, 0));
 		else if (e->flag.prec)
 			e->out = ft_strdup((char*)stmp);
 		else
@@ -48,16 +62,16 @@ void	spec_char(t_pf_env *e, char type)
 	}
 }
 
-void	print_null_char(t_pf_env *e)
+void	init_char_arg(t_pf_env *e, int *tmp)
 {
-	while (e->flag.width-- > 1)
+	if (e->tag.tag)
 	{
-		if (e->flag.zero == 1)
-			e->ret += write(e->fd, "0", 1);
-		else
-			e->ret += write(e->fd, " ", 1);
+		va_copy(e->ap[0], e->ap[1]);
+		while (--e->tag.pos >= 0)
+			*tmp = va_arg(e->ap[0], int);
+		return ;
 	}
-	++e->i;
+	*tmp = va_arg(e->ap[0], int);
 }
 
 void	print_char(t_pf_env *e, char c)
@@ -65,11 +79,11 @@ void	print_char(t_pf_env *e, char c)
 	if (e->flag.minus)
 	{
 		e->ret += write(e->fd, &c, 1);
-		print_char_width(e);
+		char_for_ptint(e, 1);
 	}
 	else
 	{
-		print_char_width(e);
+		char_for_ptint(e, 1);
 		e->ret += write(e->fd, &c, 1);
 	}
 	++e->i;

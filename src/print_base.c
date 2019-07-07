@@ -6,34 +6,11 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:14 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/03 04:25:14 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 20:41:01 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-void	print_base_pre(t_pf_env *e, char type, long val)
-{
-	if (e->flag.hash && e->out[0] != '\0' && val != 0)
-	{
-		e->ret += (type == 'o' || type == 'O') ? write(e->fd, "0", 1) : 0;
-		e->ret += (type == 'x') ? write(e->fd, "0x", 2) : 0;
-		e->ret += (type == 'X') ? write(e->fd, "0X", 2) : 0;
-		type == 'a' || type == 'A' ? e->flag.width -= 2 : 0;
-	}
-	else if ((type == 'o' || type == 'O') && e->flag.hash && e->flag.prec >= 0)
-		e->ret += write(e->fd, "0", 1);
-	else if (type == 'a' || type == 'A')
-	{
-		if (e->flag.plus || e->flag.sps)
-		{
-			e->ret += e->flag.sps ? write(1, " ", 1) : write(1, "+", 1);
-			e->flag.width--;
-		}
-		e->ret += type == 'a' ? write(e->fd, "0x", 2) : write(e->fd, "0X", 2);
-		e->flag.width -= 2;
-	}
-}
 
 void	print_base_width(t_pf_env *e, char type)
 {
@@ -87,27 +64,25 @@ void	check_base_prec(t_pf_env *e, char type)
 	}
 }
 
-void	print_base(t_pf_env *e, char type, long val)
+void	print_digit_width(t_pf_env *e)
 {
-	check_base_prec(e, type);
-	if (e->flag.zero)
+	int i;
+	int len;
+
+	i = -1;
+	len = ((int)ft_strlen(e->out) > e->flag.prec ?
+	(int)ft_strlen(e->out) : e->flag.prec);
+	(e->flag.plus + e->flag.sps + e->flag.neg) >= 1 ? e->flag.width-- : 0;
+	if (e->flag.prec >= 0)
 	{
-		print_base_pre(e, type, val);
-		print_base_width(e, type);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-	}
-	else if (e->flag.minus)
-	{
-		print_base_pre(e, type, val);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-		print_base_width(e, type);
+		while (e->flag.width - ++i > len)
+			e->ret += write(e->fd, " ", 1);
+		i = -1;
+		while ((int)ft_strlen(e->out) < len - ++i)
+			e->ret += write(e->fd, "0", 1);
 	}
 	else
-	{
-		print_base_width(e, type);
-		print_base_pre(e, type, val);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-	}
-	++e->i;
-	free(e->out);
+		while (e->flag.width - ++i > len)
+			e->ret += (e->flag.zero == 1 ?
+			write(e->fd, "0", 1) : write(e->fd, " ", 1));
 }

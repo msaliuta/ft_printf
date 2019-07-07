@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_prec_tools.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: msaliuta <msaliuta@student.42.fr>          +#+  +:+       +#+        */
+/*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:19 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/03 07:38:25 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 19:15:28 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,25 +87,6 @@ void	print_prec_width(t_pf_env *e)
 		while (e->flag.width - ++i > len)
 			e->ret += (e->flag.zero == 1 ?
 					write(e->fd, "0", 1) : write(e->fd, " ", 1));
-}
-
-void	nan_inf_long(t_pf_env *e, char type, long double var)
-{
-	if (var != var)
-	{
-		if (type == 'e' || type == 'f' || type == 'g')
-			e->ret += write(e->fd, "nan", 3);
-		else
-			e->ret += write(e->fd, "NAN", 3);
-	}
-	else if (var * 2 == var && var != 0)
-	{
-		if (type == 'e' || type == 'f' || type == 'g')
-			e->ret += write(e->fd, "inf", 3);
-		else
-			e->ret += write(e->fd, "INF", 3);
-	}
-	++e->i;
 }
 
 void	nan_inf(t_pf_env *e, char type, double var)

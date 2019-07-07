@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:18 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/03 04:25:18 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 19:25:59 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,29 +64,6 @@ void	ftoa_prec_eg(t_pf_env *e, long double d, char type, int prec)
 	free(nb);
 	free(tmp);
 	free(expo);
-}
-
-void	check_form(t_pf_env *e, long double d, char type)
-{
-	char	*nb;
-	int		neg;
-
-	neg = (d < 0 ? -1 : 1);
-	d *= neg;
-	if ((d + 0.5 > 1000000 || d < 0.0001) && e->flag.prec < 0 &&
-		d != 0)
-		return (ftoa_prec_eg(e, d * neg, type - 2, 5));
-	else if (e->flag.prec < 0)
-		return (ftoa_prec_fg(e, d * neg, 6));
-	nb = ft_ltoa((long)d);
-	if (((int)ft_strlen(nb) > e->flag.prec && e->flag.prec != 0) ||
-		(e->flag.prec == 0 && d >= 10))
-	{
-		free(nb);
-		return (ftoa_prec_eg(e, d * neg, type - 2, e->flag.prec - 1));
-	}
-	free(nb);
-	ftoa_prec_fg(e, d * neg, e->flag.prec);
 }
 
 void	print_prec_g(t_pf_env *e, long double d, char type)

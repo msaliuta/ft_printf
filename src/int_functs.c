@@ -1,48 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   spec_persent.c                                     :+:      :+:    :+:   */
+/*   int_functs.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/07/03 04:25:24 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 14:29:04 by msaliuta         ###   ########.fr       */
+/*   Created: 2019/07/03 04:25:11 by msaliuta          #+#    #+#             */
+/*   Updated: 2019/07/07 20:40:56 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	spec_percent(t_pf_env *e)
+void	init_long_argm(t_pf_env *e, long *tmp)
 {
-	if (e->flag.minus)
+	if (e->tag.tag)
 	{
-		e->ret += write(e->fd, "%", 1);
-		while (e->flag.width-- > 1)
-			e->ret += write(e->fd, " ", 1);
+		va_copy(e->ap[0], e->ap[1]);
+		while (--e->tag.pos >= 0)
+			*tmp = va_arg(e->ap[0], long);
+		return ;
 	}
-	else
-	{
-		while (e->flag.width-- > 1)
-		{
-			if (e->flag.zero)
-				e->ret += write(e->fd, "0", 1);
-			else
-				e->ret += write(e->fd, " ", 1);
-		}
-		e->ret += write(e->fd, "%", 1);
-	}
-	++e->i;
+	*tmp = va_arg(e->ap[0], long);
 }
 
-void	spec_int(t_pf_env *e)
+void	process_int(t_pf_env *e)
 {
 	long tmp;
 	long i;
 
-	init_int_arg(e, &tmp);
+	init_long_argm(e, &tmp);
 	i = (long long)tmp;
-	e->flag.minus == 1 ? e->flag.zero = 0 : 0;
-	e->flag.prec >= 0 ? e->flag.zero = 0 : 0;
+	if (e->flag.minus == 1)
+		e->flag.zero = 0;
+	if (e->flag.prec >= 0)
+		e->flag.zero = 0;
 	if (tmp == LLONG_MIN || tmp == LONG_MIN)
 		e->out = ft_strdup("-9223372036854775808");
 	else if (e->mod == pf_z)
@@ -58,16 +50,28 @@ void	spec_int(t_pf_env *e)
 		e->out = ft_ltoa((long)i);
 	else if (e->mod == pf_L)
 		e->out = ft_itoa((unsigned long)i);
-	print_digit(e);
+	digit_print(e);
 }
 
-void	spec_unsint(t_pf_env *e, char type)
+void	init_double_argm(t_pf_env *e, double *tmp)
+{
+	if (e->tag.tag)
+	{
+		va_copy(e->ap[0], e->ap[1]);
+		while (--e->tag.pos >= 0)
+			*tmp = va_arg(e->ap[0], double);
+		return ;
+	}
+	*tmp = va_arg(e->ap[0], double);
+}
+
+void	process_unsint(t_pf_env *e, char type)
 {
 	long tmp;
 
 	e->flag.sps = 0;
 	e->flag.plus = 0;
-	init_int_arg(e, &tmp);
+	init_long_argm(e, &tmp);
 	if (tmp == LLONG_MIN || tmp == LONG_MIN)
 		e->out = ft_strdup("-9223372036854775808");
 	else if (type == 'D' || type == 'U' || e->mod == pf_l ||
@@ -82,5 +86,5 @@ void	spec_unsint(t_pf_env *e, char type)
 		e->out = ft_ultoa((unsigned char)tmp);
 	else if (e->mod == pf_nomod && type != 'U')
 		e->out = ft_ultoa((unsigned int)tmp);
-	print_digit(e);
+	digit_print(e);
 }

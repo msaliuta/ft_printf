@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_wchar.c                                      :+:      :+:    :+:   */
+/*   wchar_functs.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:20 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/03 04:25:20 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 16:42:14 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,59 @@ void	put_wc(t_pf_env *e, wchar_t c)
 	++e->ret;
 }
 
-void	print_wchar_minus(t_pf_env *e, wchar_t wc)
-{
-	put_wc(e, wc);
-	while (e->flag.width-- > 1)
-		e->ret += write(e->fd, " ", 1);
-}
-
 void	print_wchar(t_pf_env *e, wchar_t wc)
 {
 	if (e->flag.minus)
-		print_wchar_minus(e, wc);
+	{
+		put_wc(e, wc);
+		while (e->flag.width-- > 1)
+			e->ret += write(e->fd, " ", 1);
+	}
 	else
 	{
 		while (e->flag.width-- > 1)
-			e->ret += (e->flag.zero ?
-			write(e->fd, "0", 1) : write(e->fd, " ", 1));
+			if (e->flag.zero)
+				e->ret += write(e->fd, "0", 1);
+			else
+				e->ret += write(e->fd, " ", 1);
 		put_wc(e, wc);
 	}
 	++e->i;
+}
+
+void	init_wchar_arg(t_pf_env *e, wchar_t *tmp)
+{
+	if (e->tag.tag)
+	{
+		va_copy(e->ap[0], e->ap[1]);
+		while (--e->tag.pos >= 0)
+			*tmp = va_arg(e->ap[0], wchar_t);
+		return ;
+	}
+	*tmp = va_arg(e->ap[0], wchar_t);
+}
+
+void	spec_wchar(t_pf_env *e, char type)
+{
+	wchar_t *ws;
+	wchar_t wc;
+
+	if (e->flag.minus)
+		e->flag.zero = 0;
+	if (type == 's' || type == 'S')
+	{
+		init_wstr_arg(e, &ws);
+		if (ws == NULL)
+			return (str_for_print(e, 0));
+		print_wstr(e, ws);
+	}
+	else if (type == 'c' || type == 'C')
+	{
+		init_wchar_arg(e, &wc);
+		if (wc == 0)
+		{
+			char_for_ptint(e, 0);
+		}
+		print_wchar(e, wc);
+	}
 }

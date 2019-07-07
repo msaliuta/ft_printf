@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:08 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/03 07:21:02 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 17:20:13 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,42 @@ void	ftoa_prec_f(t_pf_env *e, long double d)
 		prec + e->flag.prec : prec + 6, e->flag.hash);
 	free(nb);
 	free(tmp);
+}
+
+void	print_prec_f(t_pf_env *e, long double d)
+{
+	ftoa_prec_f(e, d);
+	if (e->flag.minus)
+	{
+		if (d > 0 && (e->flag.plus || e->flag.sps))
+			e->ret += (e->flag.plus == 1 ?
+			write(e->fd, "+", 1) : write(e->fd, " ", 1));
+		e->ret += write(e->fd, e->out, ft_strlen(e->out));
+		print_prec_width(e);
+	}
+	else
+	{
+		print_prec_width(e);
+		if (d > 0 && (e->flag.plus || e->flag.sps))
+			e->ret += (e->flag.plus == 1 ?
+			write(e->fd, "+", 1) : write(e->fd, " ", 1));
+		e->ret += write(e->fd, e->out, ft_strlen(e->out));
+	}
+	++e->i;
+	free(e->out);
+}
+
+long	get_prec_num_f(long double d, int prec)
+{
+	int		neg;
+	int		i;
+
+	i = -1;
+	neg = (d < 0 ? -1 : 1);
+	d *= neg;
+	while (++i < prec)
+		d *= 10;
+	d += 0.5;
+	d *= neg;
+	return ((long)d);
 }

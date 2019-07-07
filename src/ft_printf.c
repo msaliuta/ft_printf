@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/30 12:05:22 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 13:28:48 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 20:40:55 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	parse_flags(const char *restrict frmt, t_pf_env *o)
 		if (ft_strchr(CONV_FLAGS, frmt[o->i]))
 			check_conv_flag(frmt, o);
 		if (frmt[o->i] == '*')
-			check_width(o);	
+			check_width(o);
 		if (frmt[o->i] == '.')
 			check_prec(frmt, o);
 		else if (INUM1(frmt[o->i]) && o->flag.prec < 0)

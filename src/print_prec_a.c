@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:17 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/03 04:25:17 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 20:55:05 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void	print_prec_a_else(t_pf_env *e, double d, char type)
 	e->flag.width -= 2;
 	print_prec_width(e);
 	d < 0 ? e->ret += write(1, "-", 1) : 0;
-	print_base_pre(e, type, 1);
+	base_pre_print(e, type, 1);
 	e->ret += write(e->fd, e->out, ft_strlen(e->out));
 }
 
@@ -106,14 +106,14 @@ void	print_prec_a(t_pf_env *e, double d, char type)
 	if (e->flag.zero)
 	{
 		d < 0 ? e->ret += write(1, "-", 1) : 0;
-		print_base_pre(e, type, 1);
+		base_pre_print(e, type, 1);
 		print_prec_width(e);
 		e->ret += write(e->fd, e->out, ft_strlen(e->out));
 	}
 	else if (e->flag.minus)
 	{
 		d < 0 ? e->ret += write(1, "-", 1) : 0;
-		print_base_pre(e, type, 1);
+		base_pre_print(e, type, 1);
 		e->ret += write(e->fd, e->out, ft_strlen(e->out));
 		print_prec_width(e);
 	}

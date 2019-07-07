@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 07:06:53 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 14:38:58 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/07 20:40:54 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,11 @@ void	parse_mfw(const char *restrict fmt, t_pf_env *e)
 void	parse_size_spec(const char *restrict fmt, t_pf_env *e)
 {
 	if (fmt[e->i] == '%')
-		spec_percent(e);
+		process_percent(e);
 	else if (CHECK_INT(fmt[e->i]) && e->mod != pf_z)
-		spec_int(e);
+		process_int(e);
 	else if (CHECK_UINT(fmt[e->i]) || (CHECK_INT(fmt[e->i]) && e->mod == pf_z))
-		spec_unsint(e, fmt[e->i]);
+		process_unsint(e, fmt[e->i]);
 	else if (CHECK_CHR(fmt[e->i]) && e->mod != pf_l)
 		spec_char(e, fmt[e->i]);
 	else if (CHECK_LCHR(fmt[e->i]))
@@ -56,15 +56,15 @@ void	parse_size_spec(const char *restrict fmt, t_pf_env *e)
 			CHECK_LCHR(fmt[e->i]))
 		spec_wchar(e, fmt[e->i]);
 	else if (CHECK_PRC(fmt[e->i]) || CHECK_LPRC(fmt[e->i]))
-		spec_precision(e, fmt[e->i]);
+		parse_prec(e, fmt[e->i]);
 	else if (CHECK_HEX(fmt[e->i]) || CHECK_LHEX(fmt[e->i]))
-		spec_base(e, fmt[e->i]);
+		process_base(e, fmt[e->i]);
 	else if (IN(fmt[e->i]))
-		spec_return(e);
+		process_return(e);
 	else if (fmt[e->i] == 'p' || fmt[e->i] == 'P')
-		spec_ptraddr(e, fmt[e->i]);
+		process_ptraddr(e, fmt[e->i]);
 	else if (CHECK_BONUS(fmt[e->i]))
-		spec_non_printable(e);
+		process_nonprintable(e);
 	else if (fmt[e->i] != '\0')
 		print_invalid_spec(e, fmt[e->i]);
 }
@@ -98,4 +98,32 @@ void	check_prec(const char *restrict fmt, t_pf_env *e)
 		while (INUM(fmt[e->i]))
 			++e->i;
 	}
+}
+
+void	parse_prec(t_pf_env *e, char type)
+{
+	long double	ld;
+	double		d;
+
+	if (e->mod == pf_L)
+	{
+		init_long_double(e, &ld);
+		if (ld != ld || (ld * 2 == ld && ld != 0))
+			return (nan_inf(e, type, ld));
+	}
+	else
+	{
+		init_double_argm(e, &d);
+		if (d != d || (d * 2 == d && d != 0))
+			return (nan_inf(e, type, d));
+		ld = (long double)d;
+	}
+	if (type == 'e' || type == 'E')
+		return (print_prec_e(e, ld, type));
+	if (type == 'f' || type == 'F')
+		return (print_prec_f(e, ld));
+	if (type == 'g' || type == 'G')
+		return (print_prec_g(e, ld, type));
+	if (type == 'a' || type == 'A')
+		return (print_prec_a(e, ld, type));
 }
