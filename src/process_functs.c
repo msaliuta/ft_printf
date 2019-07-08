@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:22 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 20:54:01 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 13:34:38 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,11 +79,11 @@ void	process_nonprintable(t_pf_env *e)
 	while (++i < e->flag.width)
 	{
 		if (tmp[i] >= 0 && tmp[i] <= 10)
-			print_zero_to_ten(e, tmp[i]);
+			print_first_dec(e, tmp[i]);
 		else if (tmp[i] >= 11 && tmp[i] <= 20)
-			print_ten_to_twenty(e, tmp[i]);
+			print_second_dec(e, tmp[i]);
 		else if (tmp[i] >= 21 && tmp[i] <= 31)
-			print_twenty_to_thirty(e, tmp[i]);
+			print_thirtd_dec(e, tmp[i]);
 		++e->ret;
 	}
 	++e->i;

@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 07:06:53 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 20:40:54 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 12:28:55 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,12 +49,12 @@ void	parse_size_spec(const char *restrict fmt, t_pf_env *e)
 	else if (CHECK_UINT(fmt[e->i]) || (CHECK_INT(fmt[e->i]) && e->mod == pf_z))
 		process_unsint(e, fmt[e->i]);
 	else if (CHECK_CHR(fmt[e->i]) && e->mod != pf_l)
-		spec_char(e, fmt[e->i]);
+		process_char(e, fmt[e->i]);
 	else if (CHECK_LCHR(fmt[e->i]))
-		spec_char(e, fmt[e->i] + 32);
+		process_char(e, fmt[e->i] + 32);
 	else if ((CHECK_CHR(fmt[e->i]) && e->mod == pf_l) ||
 			CHECK_LCHR(fmt[e->i]))
-		spec_wchar(e, fmt[e->i]);
+		process_wchar(e, fmt[e->i]);
 	else if (CHECK_PRC(fmt[e->i]) || CHECK_LPRC(fmt[e->i]))
 		parse_prec(e, fmt[e->i]);
 	else if (CHECK_HEX(fmt[e->i]) || CHECK_LHEX(fmt[e->i]))

@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:14 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 17:50:24 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 10:33:13 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	char_for_ptint(t_pf_env *e, int n)
 	}
 }
 
-void	spec_char(t_pf_env *e, char type)
+void	process_char(t_pf_env *e, char type)
 {
 	char	*stmp;
 	int		ctmp;
@@ -53,12 +53,12 @@ void	spec_char(t_pf_env *e, char type)
 			e->out = ft_strdup((char*)stmp);
 		else
 			e->out = ft_strdup("\0");
-		print_str(e);
+		str_print(e);
 	}
 	else if (type == 'c')
 	{
 		init_char_arg(e, &ctmp);
-		print_char(e, ctmp);
+		char_print(e, ctmp);
 	}
 }
 
@@ -74,7 +74,7 @@ void	init_char_arg(t_pf_env *e, int *tmp)
 	*tmp = va_arg(e->ap[0], int);
 }
 
-void	print_char(t_pf_env *e, char c)
+void	char_print(t_pf_env *e, char c)
 {
 	if (e->flag.minus)
 	{

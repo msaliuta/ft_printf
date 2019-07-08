@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:18 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 19:25:59 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 10:46:06 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,51 +21,6 @@ void	delete_zero(char *tmp)
 		tmp[i] = '\0';
 }
 
-void	ftoa_prec_fg(t_pf_env *e, long double d, int end)
-{
-	char	*tmp;
-	char	*nb;
-	long	num;
-	int		prec;
-
-	tmp = ft_ltoa((long)d);
-	end -= ft_strlen(tmp) - 1;
-	d == 0 ? --e->flag.prec : 0;
-	d == 0 ? --end : 0;
-	prec = ft_strlen(tmp);
-	num = get_prec_num_f(d, end);
-	nb = (num == 0 ? ft_strdup("0000000") : ft_ftoa(num));
-	if ((end <= prec || d == (long)d) && e->flag.hash == 0)
-		e->out = ft_strdup(tmp);
-	else
-		e->out = ft_str_prec(nb, prec, end, 0);
-	if (!e->flag.hash && d - (long)d != 0)
-		delete_zero(e->out);
-	free(tmp);
-	free(nb);
-}
-
-void	ftoa_prec_eg(t_pf_env *e, long double d, char type, int prec)
-{
-	char	*tmp;
-	char	*nb;
-	char	*expo;
-	long	num;
-
-	prec = (prec == 1 ? 0 : prec);
-	num = get_prec_num_e(d, prec);
-	nb = ft_ftoa(num);
-	get_exponent(d, type, &expo);
-	tmp = ft_str_prec(nb, 1 + (d < 0 ? 1 : 0),
-	prec + (d < 0 ? 1 : 0), e->flag.hash);
-	if (!e->flag.hash)
-		delete_zero(tmp);
-	e->out = ft_strjoin(tmp, expo);
-	free(nb);
-	free(tmp);
-	free(expo);
-}
-
 void	print_prec_g(t_pf_env *e, long double d, char type)
 {
 	check_form(e, d, type);
@@ -75,11 +30,11 @@ void	print_prec_g(t_pf_env *e, long double d, char type)
 			e->ret += (e->flag.plus == 1 ?
 			write(e->fd, "+", 1) : write(e->fd, " ", 1));
 		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-		print_prec_width(e);
+		prec_width_print(e);
 	}
 	else
 	{
-		print_prec_width(e);
+		prec_width_print(e);
 		if (d > 0 && (e->flag.plus || e->flag.sps))
 			e->ret += (e->flag.plus == 1 ?
 			write(e->fd, "+", 1) : write(e->fd, " ", 1));

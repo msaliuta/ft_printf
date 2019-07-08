@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:17 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 20:55:05 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 14:08:01 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,61 +64,10 @@ void	hex_prec(t_pf_env *e, double d, char **frac, char type)
 	}
 }
 
-void	ftoa_prec_a(t_pf_env *e, double d, char type)
-{
-	char	*frac;
-	char	*ep;
-	char	*tmp;
-
-	d == 0 ? frac = ft_strdup("0") : hex_prec(e, d, &frac, type);
-	d == 0 ? 0 : delete_zero(frac);
-	get_a_expo(d, type, &ep);
-	if (frac[0] == '\0')
-		e->out = (d == 0 ? ft_strjoin("0", ep) : ft_strjoin("1", ep));
-	else
-	{
-		tmp = (d == 0 ? ft_strdup(frac) : ft_strjoin("1.", frac));
-		e->out = ft_strjoin(tmp, ep);
-		free(tmp);
-	}
-	free(frac);
-	free(ep);
-	if (d < 0)
-	{
-		e->flag.plus = 0;
-		e->flag.sps = 0;
-		--e->flag.width;
-	}
-}
-
-void	print_prec_a_else(t_pf_env *e, double d, char type)
+void	print_prec_a_else(t_pf_env *e, char type)
 {
 	e->flag.width -= 2;
-	print_prec_width(e);
-	d < 0 ? e->ret += write(1, "-", 1) : 0;
+	prec_width_print(e);
 	base_pre_print(e, type, 1);
 	e->ret += write(e->fd, e->out, ft_strlen(e->out));
-}
-
-void	print_prec_a(t_pf_env *e, double d, char type)
-{
-	ftoa_prec_a(e, d, type);
-	if (e->flag.zero)
-	{
-		d < 0 ? e->ret += write(1, "-", 1) : 0;
-		base_pre_print(e, type, 1);
-		print_prec_width(e);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-	}
-	else if (e->flag.minus)
-	{
-		d < 0 ? e->ret += write(1, "-", 1) : 0;
-		base_pre_print(e, type, 1);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-		print_prec_width(e);
-	}
-	else
-		print_prec_a_else(e, d, type);
-	free(e->out);
-	++e->i;
 }

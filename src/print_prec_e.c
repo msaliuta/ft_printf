@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:18 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/03 04:25:18 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 12:15:32 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,40 +59,20 @@ long	get_prec_num_e(long double d, int prec)
 	return ((long)d);
 }
 
-void	ftoa_prec_e(t_pf_env *e, long double d, char type)
-{
-	char	*tmp;
-	char	*nb;
-	char	*expo;
-	long	num;
-	int		prec;
-
-	prec = (e->flag.prec >= 0 ? e->flag.prec : 6);
-	num = (d == 0 ? 0 : get_prec_num_e(d, prec));
-	nb = (d == 0 ? ft_strdup("0000000") : ft_ftoa(num));
-	d == 0 ? expo = ft_strjoin(&type, "+00") : get_exponent(d, type, &expo);
-	tmp = (d < 0 ? ft_str_prec(nb, 2, prec + 1, e->flag.hash)
-	: ft_str_prec(nb, 1, prec, e->flag.hash));
-	e->out = ft_strjoin(tmp, expo);
-	free(nb);
-	free(tmp);
-	free(expo);
-}
-
 void	print_prec_e(t_pf_env *e, long double d, char type)
 {
-	ftoa_prec_e(e, d, type);
+	ftoa_e(e, d, type, 0);
 	if (e->flag.minus)
 	{
 		if (d > 0 && (e->flag.plus || e->flag.sps))
 			e->ret += (e->flag.plus == 1 ?
 			write(e->fd, "+", 1) : write(e->fd, " ", 1));
 		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-		print_prec_width(e);
+		prec_width_print(e);
 	}
 	else
 	{
-		print_prec_width(e);
+		prec_width_print(e);
 		if (d > 0 && (e->flag.plus || e->flag.sps))
 			e->ret += (e->flag.plus == 1 ? write(e->fd, "+", 1) :
 			write(e->fd, " ", 1));
