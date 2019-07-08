@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/30 12:05:22 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/07 20:40:55 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 20:42:08 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,9 @@ void	parse_flags(const char *restrict frmt, t_pf_env *o)
 			check_width(o);
 		if (frmt[o->i] == '.')
 			check_prec(frmt, o);
-		else if (INUM1(frmt[o->i]) && o->flag.prec < 0)
+		else if (INUM1(frmt[o->i]) && o->flmd.prec < 0)
 		{
-			o->flag.width = ft_atoi(frmt + o->i);
+			o->flmd.width = ft_atoi(frmt + o->i);
 			while (INUM(frmt[o->i]))
 				++o->i;
 		}
@@ -76,39 +76,39 @@ void	parse_flags(const char *restrict frmt, t_pf_env *o)
 void	check_conv_flag(const char *restrict frmt, t_pf_env *o)
 {
 	if (frmt[o->i] == ' ')
-		o->flag.sps = 1;
+		o->flmd.space = 1;
 	if (frmt[o->i] == '-')
-		o->flag.minus = 1;
+		o->flmd.minus = 1;
 	if (frmt[o->i] == '+')
-		o->flag.plus = 1;
+		o->flmd.plus = 1;
 	if (frmt[o->i] == '#')
-		o->flag.hash = 1;
+		o->flmd.hash = 1;
 	if (frmt[o->i] == '0')
-		o->flag.zero = 1;
+		o->flmd.zero = 1;
 }
 
 void	parce_modif(const char *restrict frmt, t_pf_env *o)
 {
 	if (frmt[o->i] == 'h' && frmt[o->i + 1] != 'h')
-		o->mod = pf_h;
+		o->mod = H;
 	else if (frmt[o->i] == 'h' && frmt[o->i + 1] == 'h')
 	{
-		o->mod = pf_hh;
+		o->mod = HH;
 		++o->i;
 	}
 	else if (frmt[o->i] == 'l' && frmt[o->i + 1] != 'l')
-		o->mod = pf_l;
+		o->mod = L;
 	else if (frmt[o->i] == 'l' && frmt[o->i + 1] == 'l')
 	{
-		o->mod = pf_ll;
+		o->mod = LL;
 		++o->i;
 	}
 	else if (frmt[o->i] == 'z')
-		o->mod = pf_z;
+		o->mod = Z;
 	else if (frmt[o->i] == 'j')
-		o->mod = pf_j;
+		o->mod = J;
 	else if (frmt[o->i] == 'L')
-		o->mod = pf_L;
+		o->mod = L1;
 	else if (frmt[o->i] == 't')
-		o->mod = pf_t;
+		o->mod = T;
 }

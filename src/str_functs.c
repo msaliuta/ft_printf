@@ -6,76 +6,76 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:20 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/08 13:14:06 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 19:12:33 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	str_for_print(t_pf_env *e, int n)
+void	str_for_print(t_pf_env *o, int n)
 {
 	if (n == 1)
 	{
-		n = ft_strlen(e->out);
-		while (e->flag.width-- > n)
-			if (e->flag.zero == 1)
-				e->ret += write(e->fd, "0", 1);
+		n = ft_strlen(o->out);
+		while (o->flmd.width-- > n)
+			if (o->flmd.zero == 1)
+				o->ret += write(o->fd, "0", 1);
 			else
-				e->ret += write(e->fd, " ", 1);
+				o->ret += write(o->fd, " ", 1);
 	}
 	else
 	{
-		if (e->flag.prec < 0)
+		if (o->flmd.prec < 0)
 			n = 6;
 		else
-			n = e->flag.prec;
-		while (e->flag.width-- > n)
-			if (e->flag.zero == 1)
-				e->ret += write(e->fd, "0", 1);
+			n = o->flmd.prec;
+		while (o->flmd.width-- > n)
+			if (o->flmd.zero == 1)
+				o->ret += write(o->fd, "0", 1);
 			else
-				e->ret += write(e->fd, " ", 1);
-		e->ret += write(e->fd, "(null)", n);
-		++e->i;
+				o->ret += write(o->fd, " ", 1);
+		o->ret += write(o->fd, "(null)", n);
+		++o->i;
 	}
 }
 
-void	str_print(t_pf_env *e)
+void	str_print(t_pf_env *o)
 {
 	char	*tmp;
 
-	if (e->flag.prec >= 0 && e->flag.prec < (int)ft_strlen(e->out))
+	if (o->flmd.prec >= 0 && o->flmd.prec < (int)ft_strlen(o->out))
 	{
-		tmp = ft_strsub(e->out, 0, (e->flag.prec));
-		free(e->out);
-		e->out = tmp;
+		tmp = ft_strsub(o->out, 0, (o->flmd.prec));
+		free(o->out);
+		o->out = tmp;
 	}
-	if (e->flag.minus)
+	if (o->flmd.minus)
 	{
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-		str_for_print(e, 1);
+		o->ret += write(o->fd, o->out, ft_strlen(o->out));
+		str_for_print(o, 1);
 	}
 	else
 	{
-		str_for_print(e, 1);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
+		str_for_print(o, 1);
+		o->ret += write(o->fd, o->out, ft_strlen(o->out));
 	}
-	++e->i;
-	free(e->out);
+	++o->i;
+	free(o->out);
 }
 
-void	init_str_arg(t_pf_env *e, char **tmp)
+void	init_str_arg(t_pf_env *o, char **tmp)
 {
-	if (e->tag.tag)
+	if (o->tag.tag)
 	{
-		va_copy(e->ap[0], e->ap[1]);
-		while (e->tag.pos >= 0)
+		va_copy(o->ap[0], o->ap[1]);
+		while (o->tag.pos >= 0)
 		{
-			*tmp = va_arg(e->ap[0], char *);
-			e->tag.pos--;
+			*tmp = va_arg(o->ap[0], char *);
+			o->tag.pos--;
 		}
 		return ;
 	}
-	*tmp = va_arg(e->ap[0], char *);
+	*tmp = va_arg(o->ap[0], char *);
 }
 
 char	*ft_str_prec(char *s1, int dot, int end, int hash)
@@ -105,7 +105,7 @@ char	*ft_str_prec(char *s1, int dot, int end, int hash)
 	return (tmp);
 }
 
-void	prrint_wstr_1(t_pf_env *e, char c)
+void	prrint_wstr_1(t_pf_env *o, char c)
 {
-	e->ret += write(e->fd, &c, 1);
+	o->ret += write(o->fd, &c, 1);
 }

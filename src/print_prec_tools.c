@@ -6,7 +6,7 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:19 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/08 10:09:40 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 20:44:23 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,58 @@ char	*ft_ftoa(long double d)
 	return (s);
 }
 
-void	nan_inf(t_pf_env *e, char type, double var)
+void	nan_inf(t_pf_env *o, char type, double var)
 {
 	if (var != var)
 	{
 		if (type == 'e' || type == 'f' || type == 'g')
-			e->ret += write(e->fd, "nan", 3);
+			o->ret += write(o->fd, "nan", 3);
 		else
-			e->ret += write(e->fd, "NAN", 3);
+			o->ret += write(o->fd, "NAN", 3);
 	}
 	else if (var * 2 == var && var != 0)
 	{
 		if (type == 'e' || type == 'f' || type == 'g')
-			e->ret += write(e->fd, "inf", 3);
+			o->ret += write(o->fd, "inf", 3);
 		else
-			e->ret += write(e->fd, "INF", 3);
+			o->ret += write(o->fd, "INF", 3);
 	}
-	++e->i;
+	++o->i;
+}
+
+void	delete_zero(char *tmp)
+{
+	int		i;
+
+	i = ft_strlen(tmp);
+	while (--i >= 0 && tmp[i] == '0')
+		tmp[i] = '\0';
+}
+
+void	hex_prec(t_pf_env *o, double d, char **frac, char type)
+{
+	unsigned long	cmp;
+	long			num;
+	int				len;
+	int				cnt;
+	int				i;
+
+	len = (o->flmd.prec < 0 ? 13 : o->flmd.prec);
+	*frac = ft_strnew(len);
+	cmp = 0x0008000000000000;
+	i = -1;
+	num = *(long*)&d;
+	while (++i < len)
+	{
+		cnt = 0;
+		cnt += (num & cmp) == 0 ? 0 : 8;
+		cmp >>= 1;
+		cnt += (num & cmp) == 0 ? 0 : 4;
+		cmp >>= 1;
+		cnt += (num & cmp) == 0 ? 0 : 2;
+		cmp >>= 1;
+		cnt += (num & cmp) == 0 ? 0 : 1;
+		cmp >>= 1;
+		frac[0][i] = (cnt < 10 ? cnt + 48 : cnt + type - 10);
+	}
 }

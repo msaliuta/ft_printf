@@ -1,38 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   print_wstr.c                                       :+:      :+:    :+:   */
+/*   wstr_functs.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:21 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/08 13:16:18 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 19:12:33 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	check_wstr(t_pf_env *e, wchar_t c)
+void	check_wstr(t_pf_env *o, wchar_t c)
 {
 	if (c <= 0x7F)
-		prrint_wstr_1(e, c);
+		prrint_wstr_1(o, c);
 	else if (c <= 0x7FF)
 	{
-		prrint_wstr_1(e, (c >> 6) + 0xC0);
-		prrint_wstr_1(e, (c & 0x3F) + 0x80);
+		prrint_wstr_1(o, (c >> 6) + 0xC0);
+		prrint_wstr_1(o, (c & 0x3F) + 0x80);
 	}
 	else if (c <= 0xFFFF)
 	{
-		prrint_wstr_1(e, ((c >> 12) + 0xE0));
-		prrint_wstr_1(e, ((c >> 6) & 0x3F) + 0x80);
-		prrint_wstr_1(e, (c & 0x3F) + 0x80);
+		prrint_wstr_1(o, ((c >> 12) + 0xE0));
+		prrint_wstr_1(o, ((c >> 6) & 0x3F) + 0x80);
+		prrint_wstr_1(o, (c & 0x3F) + 0x80);
 	}
 	else if (c <= 0x10FFFF)
 	{
-		prrint_wstr_1(e, (c >> 18) + 0xF0);
-		prrint_wstr_1(e, ((c >> 12) & 0x3F) + 0x80);
-		prrint_wstr_1(e, ((c >> 6) & 0x3F) + 0x80);
-		prrint_wstr_1(e, (c & 0x3F) + 0x80);
+		prrint_wstr_1(o, (c >> 18) + 0xF0);
+		prrint_wstr_1(o, ((c >> 12) & 0x3F) + 0x80);
+		prrint_wstr_1(o, ((c >> 6) & 0x3F) + 0x80);
+		prrint_wstr_1(o, (c & 0x3F) + 0x80);
 	}
 }
 
@@ -57,63 +57,63 @@ int		get_wstr_len(wchar_t *wchr)
 	return (len);
 }
 
-void	wstr_min_print(t_pf_env *e, wchar_t *wchr, int len)
+void	wstr_min_print(t_pf_env *o, wchar_t *wchr, int len)
 {
 	int i;
 
 	i = -1;
-	if (e->flag.prec >= 0)
+	if (o->flmd.prec >= 0)
 	{
-		while (wchr[++i] != 0 && i < e->flag.prec)
-			check_wstr(e, wchr[i]);
+		while (wchr[++i] != 0 && i < o->flmd.prec)
+			check_wstr(o, wchr[i]);
 	}
 	else
 	{
 		while (wchr[++i] != 0)
-			check_wstr(e, wchr[i]);
+			check_wstr(o, wchr[i]);
 	}
-	while (e->flag.width-- > len)
-		if (e->flag.zero == 1)
-			e->ret = write (e->fd, "0", 1);
+	while (o->flmd.width-- > len)
+		if (o->flmd.zero == 1)
+			o->ret = write(o->fd, "0", 1);
 		else
-			e->ret = write (e->fd, " ", 1);
+			o->ret = write(o->fd, " ", 1);
 }
 
-void	wstr_init(t_pf_env *e, wchar_t **tmp)
+void	wstr_init(t_pf_env *o, wchar_t **tmp)
 {
-	if (e->tag.tag)
+	if (o->tag.tag)
 	{
-		va_copy(e->ap[0], e->ap[1]);
-		while (--e->tag.pos >= 0)
-			*tmp = va_arg(e->ap[0], wchar_t *);
+		va_copy(o->ap[0], o->ap[1]);
+		while (--o->tag.pos >= 0)
+			*tmp = va_arg(o->ap[0], wchar_t *);
 		return ;
 	}
-	*tmp = va_arg(e->ap[0], wchar_t *);
+	*tmp = va_arg(o->ap[0], wchar_t *);
 }
 
-void	print_wstr(t_pf_env *e, wchar_t *wchr)
+void	print_wstr(t_pf_env *o, wchar_t *wchr)
 {
 	int i;
 	int len;
 
 	i = -1;
-	if (e->flag.prec < 0)
+	if (o->flmd.prec < 0)
 		len = get_wstr_len(wchr);
 	else
-		len = e->flag.prec;
-	if (e->flag.minus)
-		wstr_min_print(e, wchr, len);
+		len = o->flmd.prec;
+	if (o->flmd.minus)
+		wstr_min_print(o, wchr, len);
 	else
 	{
-		while (e->flag.width-- > len)
-			e->ret += (e->flag.zero == 1 ?
-			write(e->fd, "0", 1) : write(e->fd, " ", 1));
-		if (e->flag.prec >= 0)
-			while (wchr[++i] != 0 && i * 4 < e->flag.prec)
-				check_wstr(e, wchr[i]);
+		while (o->flmd.width-- > len)
+			o->ret += (o->flmd.zero == 1 ?
+			write(o->fd, "0", 1) : write(o->fd, " ", 1));
+		if (o->flmd.prec >= 0)
+			while (wchr[++i] != 0 && i * 4 < o->flmd.prec)
+				check_wstr(o, wchr[i]);
 		else
 			while (wchr[++i] != 0)
-				check_wstr(e, wchr[i]);
+				check_wstr(o, wchr[i]);
 	}
-	++e->i;
+	++o->i;
 }

@@ -6,124 +6,124 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 07:06:53 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/08 12:28:55 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 20:42:10 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	parse_mfw(const char *restrict fmt, t_pf_env *e)
+void	parse_mfw(const char *restrict frmt, t_pf_env *o)
 {
 	int	i;
 	int tmp;
 
 	i = 0;
-	e->flag.sps = 0;
-	e->flag.plus = 0;
-	e->flag.neg = 0;
-	e->flag.minus = 0;
-	e->flag.hash = 0;
-	e->flag.zero = 0;
-	e->flag.prec = -1;
-	e->flag.width = 0;
-	if (INUM(fmt[e->i]))
+	o->flmd.space = 0;
+	o->flmd.plus = 0;
+	o->flmd.neg = 0;
+	o->flmd.minus = 0;
+	o->flmd.hash = 0;
+	o->flmd.zero = 0;
+	o->flmd.prec = -1;
+	o->flmd.width = 0;
+	if (INUM(frmt[o->i]))
 	{
-		tmp = ft_atoi(fmt + e->i);
-		while (INUM(fmt[e->i + i]))
+		tmp = ft_atoi(frmt + o->i);
+		while (INUM(frmt[o->i + i]))
 			i++;
-		if (fmt[e->i + i] == '$')
+		if (frmt[o->i + i] == '$')
 		{
-			e->tag.tag = 1;
-			e->tag.pos = tmp;
-			e->i += i + 1;
+			o->tag.tag = 1;
+			o->tag.pos = tmp;
+			o->i += i + 1;
 		}
 	}
 }
 
-void	parse_size_spec(const char *restrict fmt, t_pf_env *e)
+void	parse_size_spec(const char *restrict frmt, t_pf_env *o)
 {
-	if (fmt[e->i] == '%')
-		process_percent(e);
-	else if (CHECK_INT(fmt[e->i]) && e->mod != pf_z)
-		process_int(e);
-	else if (CHECK_UINT(fmt[e->i]) || (CHECK_INT(fmt[e->i]) && e->mod == pf_z))
-		process_unsint(e, fmt[e->i]);
-	else if (CHECK_CHR(fmt[e->i]) && e->mod != pf_l)
-		process_char(e, fmt[e->i]);
-	else if (CHECK_LCHR(fmt[e->i]))
-		process_char(e, fmt[e->i] + 32);
-	else if ((CHECK_CHR(fmt[e->i]) && e->mod == pf_l) ||
-			CHECK_LCHR(fmt[e->i]))
-		process_wchar(e, fmt[e->i]);
-	else if (CHECK_PRC(fmt[e->i]) || CHECK_LPRC(fmt[e->i]))
-		parse_prec(e, fmt[e->i]);
-	else if (CHECK_HEX(fmt[e->i]) || CHECK_LHEX(fmt[e->i]))
-		process_base(e, fmt[e->i]);
-	else if (IN(fmt[e->i]))
-		process_return(e);
-	else if (fmt[e->i] == 'p' || fmt[e->i] == 'P')
-		process_ptraddr(e, fmt[e->i]);
-	else if (CHECK_BONUS(fmt[e->i]))
-		process_nonprintable(e);
-	else if (fmt[e->i] != '\0')
-		print_invalid_spec(e, fmt[e->i]);
+	if (frmt[o->i] == '%')
+		process_percent(o);
+	else if (CHECK_INT(frmt[o->i]) && o->mod != Z)
+		process_int(o);
+	else if (CHECK_UINT(frmt[o->i]) || (CHECK_INT(frmt[o->i]) && o->mod == Z))
+		process_unsint(o, frmt[o->i]);
+	else if (CHECK_CHR(frmt[o->i]) && o->mod != L)
+		process_char(o, frmt[o->i]);
+	else if (CHECK_LCHR(frmt[o->i]))
+		process_char(o, frmt[o->i] + 32);
+	else if ((CHECK_CHR(frmt[o->i]) && o->mod == L) ||
+			CHECK_LCHR(frmt[o->i]))
+		process_wchar(o, frmt[o->i]);
+	else if (CHECK_PRC(frmt[o->i]) || CHECK_LPRC(frmt[o->i]))
+		parse_prec(o, frmt[o->i]);
+	else if (CHECK_HEX(frmt[o->i]) || CHECK_LHEX(frmt[o->i]))
+		process_base(o, frmt[o->i]);
+	else if (IN(frmt[o->i]))
+		process_return(o);
+	else if (frmt[o->i] == 'p' || frmt[o->i] == 'P')
+		process_ptraddr(o, frmt[o->i]);
+	else if (CHECK_BONUS(frmt[o->i]))
+		process_nonprintable(o);
+	else if (frmt[o->i] != '\0')
+		print_invalid_spec(o, frmt[o->i]);
 }
 
-void	check_width(t_pf_env *e)
+void	check_width(t_pf_env *o)
 {
-	e->flag.width = va_arg(e->ap[0], int);
-	if (e->flag.width < 0)
+	o->flmd.width = va_arg(o->ap[0], int);
+	if (o->flmd.width < 0)
 	{
-		e->flag.width = -e->flag.width;
-		e->flag.minus = 1;
+		o->flmd.width = -o->flmd.width;
+		o->flmd.minus = 1;
 	}
 }
 
-void	check_prec(const char *restrict fmt, t_pf_env *e)
+void	check_prec(const char *restrict frmt, t_pf_env *o)
 {
-	if (e->flag.prec >= 0)
+	if (o->flmd.prec >= 0)
 	{
-		++e->i;
+		++o->i;
 		return ;
 	}
-	if (fmt[e->i] == '.' && fmt[e->i + 1] == '*')
+	if (frmt[o->i] == '.' && frmt[o->i + 1] == '*')
 	{
-		e->flag.prec = va_arg(e->ap[0], int);
-		e->i += 2;
+		o->flmd.prec = va_arg(o->ap[0], int);
+		o->i += 2;
 	}
-	else if (fmt[e->i] == '.')
+	else if (frmt[o->i] == '.')
 	{
-		++e->i;
-		e->flag.prec = ft_atoi(fmt + e->i);
-		while (INUM(fmt[e->i]))
-			++e->i;
+		++o->i;
+		o->flmd.prec = ft_atoi(frmt + o->i);
+		while (INUM(frmt[o->i]))
+			++o->i;
 	}
 }
 
-void	parse_prec(t_pf_env *e, char type)
+void	parse_prec(t_pf_env *o, char type)
 {
 	long double	ld;
 	double		d;
 
-	if (e->mod == pf_L)
+	if (o->mod == L1)
 	{
-		init_long_double(e, &ld);
+		init_long_double(o, &ld);
 		if (ld != ld || (ld * 2 == ld && ld != 0))
-			return (nan_inf(e, type, ld));
+			return (nan_inf(o, type, ld));
 	}
 	else
 	{
-		init_double_argm(e, &d);
+		init_double_argm(o, &d);
 		if (d != d || (d * 2 == d && d != 0))
-			return (nan_inf(e, type, d));
+			return (nan_inf(o, type, d));
 		ld = (long double)d;
 	}
 	if (type == 'e' || type == 'E')
-		return (print_prec_e(e, ld, type));
+		return (prec_print(o, ld, type, 0));
 	if (type == 'f' || type == 'F')
-		return (print_prec_f(e, ld));
+		return (prec_print(o, ld, '0', 1));
 	if (type == 'g' || type == 'G')
-		return (print_prec_g(e, ld, type));
+		return (prec_print(o, ld, type, 2));
 	if (type == 'a' || type == 'A')
-		return (print_prec_a(e, ld, type));
+		return (print_prec_a(o, ld, type));
 }

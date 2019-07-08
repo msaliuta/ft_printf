@@ -6,7 +6,7 @@
 #    By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/06/15 17:47:09 by msaliuta          #+#    #+#              #
-#    Updated: 2019/07/08 13:46:44 by msaliuta         ###   ########.fr        #
+#    Updated: 2019/07/08 20:25:03 by msaliuta         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,15 +30,9 @@ SRCS	=	ft_printf\
 			wstr_functs\
 			bonus1\
 			prec_print_functs\
-			check_settings\
-			ftoa_prec_f\
-			print_invalid_spec\
-			print_invd_width\
-			print_prec_a\
-			print_prec_e\
-			print_prec_g\
-			print_prec_tools\
-			print_ptraddr
+			get_functs\
+			print_wdthpdr\
+			print_prec_tools
 
 CSRC	=	$(addprefix $(SDIR)/, $(addsuffix .c, $(SRCS)))
 COBJ	=	$(addprefix $(ODIR)/, $(addsuffix .o, $(SRCS)))

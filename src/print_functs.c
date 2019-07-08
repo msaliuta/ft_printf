@@ -6,125 +6,125 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:15 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/08 09:48:59 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 19:12:33 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	digit_sign_print(t_pf_env *e)
+void	digit_sign_print(t_pf_env *o)
 {
-	if (e->flag.plus || e->flag.sps)
+	if (o->flmd.plus || o->flmd.space)
 	{
-		if (e->flag.plus == 1)
-			e->ret += write(e->fd, "+", 1);
+		if (o->flmd.plus == 1)
+			o->ret += write(o->fd, "+", 1);
 		else
-			e->ret += write(e->fd, " ", 1);
+			o->ret += write(o->fd, " ", 1);
 	}
-	else if (e->flag.neg)
-		e->ret += write(e->fd, "-", 1);
+	else if (o->flmd.neg)
+		o->ret += write(o->fd, "-", 1);
 }
 
-void	digit_print(t_pf_env *e)
+void	digit_print(t_pf_env *o)
 {
-	process_dgt_prec(e);
-	if (e->flag.zero)
+	process_dgt_prec(o);
+	if (o->flmd.zero)
 	{
-		digit_sign_print(e);
-		digit_width_print(e);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
+		digit_sign_print(o);
+		digit_width_print(o);
+		o->ret += write(o->fd, o->out, ft_strlen(o->out));
 	}
-	else if (e->flag.minus)
+	else if (o->flmd.minus)
 	{
-		digit_sign_print(e);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-		digit_width_print(e);
+		digit_sign_print(o);
+		o->ret += write(o->fd, o->out, ft_strlen(o->out));
+		digit_width_print(o);
 	}
 	else
 	{
-		digit_width_print(e);
-		digit_sign_print(e);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
+		digit_width_print(o);
+		digit_sign_print(o);
+		o->ret += write(o->fd, o->out, ft_strlen(o->out));
 	}
-	++e->i;
-	free(e->out);
+	++o->i;
+	free(o->out);
 }
 
-void	base_pre_print(t_pf_env *e, char type, long val)
+void	base_pre_print(t_pf_env *o, char type, long val)
 {
-	if (e->flag.hash && e->out[0] != '\0' && val != 0)
-		bpp_check(e, type, 1);
-	else if ((type == 'o' || type == 'O') && e->flag.hash && e->flag.prec >= 0)
-		e->ret += write(e->fd, "0", 1);
+	if (o->flmd.hash && o->out[0] != '\0' && val != 0)
+		bpp_check(o, type, 1);
+	else if ((type == 'o' || type == 'O') && o->flmd.hash && o->flmd.prec >= 0)
+		o->ret += write(o->fd, "0", 1);
 	else if (type == 'a' || type == 'A')
 	{
-		if (e->flag.plus || e->flag.sps)
+		if (o->flmd.plus || o->flmd.space)
 		{
-			bpp_check(e, type, 2);
+			bpp_check(o, type, 2);
 		}
 		if (type == 'a')
 		{
-			e->ret += type;
-			write(e->fd, "0x", 2);
+			o->ret += type;
+			write(o->fd, "0x", 2);
 		}
 		else
 		{
-			e->ret += type;
-			write(e->fd, "0X", 2);
+			o->ret += type;
+			write(o->fd, "0X", 2);
 		}
-		e->flag.width -= 2;
+		o->flmd.width -= 2;
 	}
 }
 
-void	bpp_check(t_pf_env *e, char type, int n)
+void	bpp_check(t_pf_env *o, char type, int n)
 {
 	if (n == 1)
 	{
 		if (type == 'o' || type == 'O')
-			e->ret += write(e->fd, "0", 1);
+			o->ret += write(o->fd, "0", 1);
 		if (type == 'x')
-			e->ret += write(e->fd, "0x", 2);
+			o->ret += write(o->fd, "0x", 2);
 		if (type == 'X')
-			e->ret += write(e->fd, "0X", 2);
+			o->ret += write(o->fd, "0X", 2);
 		if (type == 'a' || type == 'A')
-			e->flag.width -= 2;
+			o->flmd.width -= 2;
 	}
 	else
 	{
-		if (e->flag.sps)
+		if (o->flmd.space)
 		{
-			e->ret += e->flag.sps;
+			o->ret += o->flmd.space;
 			write(1, " ", 1);
 		}
 		else
 		{
-			e->ret += e->flag.sps;
+			o->ret += o->flmd.space;
 			write(1, "+", 1);
 		}
 	}
 }
 
-void	base_print(t_pf_env *e, char type, long val)
+void	base_print(t_pf_env *o, char type, long val)
 {
-	check_prec_base(e, type);
-	if (e->flag.zero)
+	check_prec_base(o, type);
+	if (o->flmd.zero)
 	{
-		base_pre_print(e, type, val);
-		base_width_print(e, type);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
+		base_pre_print(o, type, val);
+		base_width_print(o, type);
+		o->ret += write(o->fd, o->out, ft_strlen(o->out));
 	}
-	else if (e->flag.minus)
+	else if (o->flmd.minus)
 	{
-		base_pre_print(e, type, val);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
-		base_width_print(e, type);
+		base_pre_print(o, type, val);
+		o->ret += write(o->fd, o->out, ft_strlen(o->out));
+		base_width_print(o, type);
 	}
 	else
 	{
-		base_width_print(e, type);
-		base_pre_print(e, type, val);
-		e->ret += write(e->fd, e->out, ft_strlen(e->out));
+		base_width_print(o, type);
+		base_pre_print(o, type, val);
+		o->ret += write(o->fd, o->out, ft_strlen(o->out));
 	}
-	++e->i;
-	free(e->out);
+	++o->i;
+	free(o->out);
 }

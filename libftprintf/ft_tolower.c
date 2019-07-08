@@ -6,13 +6,13 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/27 20:03:21 by msaliuta          #+#    #+#             */
-/*   Updated: 2018/10/27 20:03:23 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 16:58:33 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int	ft_tolower(int c)
+int	ft_pf_tolower(int c)
 {
 	if (ft_isupper(c))
 		return (c + 32);

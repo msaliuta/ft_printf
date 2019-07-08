@@ -6,25 +6,25 @@
 /*   By: msaliuta <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/03 04:25:11 by msaliuta          #+#    #+#             */
-/*   Updated: 2019/07/08 12:13:16 by msaliuta         ###   ########.fr       */
+/*   Updated: 2019/07/08 19:12:33 by msaliuta         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-void	init_long_double(t_pf_env *e, long double *tmp)
+void	init_long_double(t_pf_env *o, long double *tmp)
 {
-	if (e->tag.tag)
+	if (o->tag.tag)
 	{
-		va_copy(e->ap[0], e->ap[1]);
-		while (--e->tag.pos >= 0)
-			*tmp = va_arg(e->ap[0], long double);
+		va_copy(o->ap[0], o->ap[1]);
+		while (--o->tag.pos >= 0)
+			*tmp = va_arg(o->ap[0], long double);
 		return ;
 	}
-	*tmp = va_arg(e->ap[0], long double);
+	*tmp = va_arg(o->ap[0], long double);
 }
 
-void	check_form(t_pf_env *e, long double d, char tnt)
+void	check_form(t_pf_env *o, long double d, char tnt)
 {
 	char	*nb;
 	int		neg;
@@ -34,57 +34,57 @@ void	check_form(t_pf_env *e, long double d, char tnt)
 	else
 		neg = 1;
 	d *= neg;
-	if ((d + 0.5 > 1000000 || d < 0.0001) && e->flag.prec < 0 &&
+	if ((d + 0.5 > 1000000 || d < 0.0001) && o->flmd.prec < 0 &&
 		d != 0)
-		return (ftoa_eg(e, d * neg, tnt - 2, 5));
-	else if (e->flag.prec < 0)
-		return (ftoa_fg(e, d * neg, 6, 0));
+		return (ftoa_eg(o, d * neg, tnt - 2, 5));
+	else if (o->flmd.prec < 0)
+		return (ftoa_fg(o, d * neg, 6, 0));
 	nb = ft_ltoa((long)d);
-	if (((int)ft_strlen(nb) > e->flag.prec && e->flag.prec != 0) ||
-		(e->flag.prec == 0 && d >= 10))
+	if (((int)ft_strlen(nb) > o->flmd.prec && o->flmd.prec != 0) ||
+		(o->flmd.prec == 0 && d >= 10))
 	{
 		free(nb);
-		return (ftoa_eg(e, d * neg, tnt - 2, e->flag.prec - 1));
+		return (ftoa_eg(o, d * neg, tnt - 2, o->flmd.prec - 1));
 	}
 	free(nb);
-	ftoa_fg(e, d * neg, e->flag.prec, 0);
+	ftoa_fg(o, d * neg, o->flmd.prec, 0);
 }
 
-void	process_dgt_sign(t_pf_env *e)
+void	process_dgt_sign(t_pf_env *o)
 {
 	char *tmp;
 
-	if (e->out[0] == '-')
+	if (o->out[0] == '-')
 	{
-		tmp = ft_strdup(e->out + 1);
-		free(e->out);
-		e->out = tmp;
-		e->flag.sps = 0;
-		e->flag.plus = 0;
-		e->flag.neg = 1;
+		tmp = ft_strdup(o->out + 1);
+		free(o->out);
+		o->out = tmp;
+		o->flmd.space = 0;
+		o->flmd.plus = 0;
+		o->flmd.neg = 1;
 	}
 }
 
-void	process_dgt_prec(t_pf_env *e)
+void	process_dgt_prec(t_pf_env *o)
 {
 	char	*tmp;
 	char	*res;
 	int		len;
 	int		i;
 
-	process_dgt_sign(e);
-	len = (int)ft_strlen(e->out);
-	if (e->flag.prec == 0 && e->out[0] == '0')
-		e->out[0] = '\0';
-	else if (e->flag.prec > len)
+	process_dgt_sign(o);
+	len = (int)ft_strlen(o->out);
+	if (o->flmd.prec == 0 && o->out[0] == '0')
+		o->out[0] = '\0';
+	else if (o->flmd.prec > len)
 	{
-		i = e->flag.prec - len;
+		i = o->flmd.prec - len;
 		tmp = ft_strnew(i);
 		while (i-- > 0)
 			tmp[i] = '0';
-		res = ft_strjoin(tmp, e->out);
+		res = ft_strjoin(tmp, o->out);
 		free(tmp);
-		free(e->out);
-		e->out = res;
+		free(o->out);
+		o->out = res;
 	}
 }
