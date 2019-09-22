@@ -1,11 +1,10 @@
 # ft_printf
 
-Made for UnitFactory's ft_printf project
+Made for UnitFactory's ft_printf project. My own implimantation if standart function printf()
 
 ## Description:
-Re-Code ft_printf with many options
-Add custom useful options
-Using external libraries is not allowed
+
+In C programming language, printf() function is used to print the “character, string, float, integer, octal and hexadecimal values” onto the output screen. We use printf() function with %d format specifier to display the value of an integer variable
 
 ## Installation
 
