@@ -24,4 +24,4 @@ https://github.com/msaliuta/ft_printf.git
  ```
  
 ## Score:
-105/100:
+105/100
