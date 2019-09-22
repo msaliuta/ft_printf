@@ -9,7 +9,7 @@ Using external libraries is not allowed
 
 ## Installation
 
-Use the package manager [dwl] (https://github.com/msaliuta/ft_printf.git) to install ft_printf.
+Use the package manager [dwl](https://github.com/msaliuta/ft_printf.git) to install ft_printf.
 
 ```
 dwl instal ft_printf
