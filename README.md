@@ -20,6 +20,7 @@ https://github.com/msaliuta/ft_printf.git
  ```
  cd ~/ft_printf
  make
+ ft_printf("%[flags][width][.precision][length]specifier, ...);
  ```
  
 ## Score:
