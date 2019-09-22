@@ -11,7 +11,7 @@ Using external libraries is not allowed
 
 Use the package manager [dwl](https://github.com/msaliuta/ft_printf.git) to install ft_printf.
 
-```
+```bash
 dwl instal ft_printf
 ```
 
