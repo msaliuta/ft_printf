@@ -23,4 +23,4 @@ https://github.com/msaliuta/ft_printf.git
  ```
  
 ## Score:
-105/100
+!(https://github.com/msaliuta/ft_printf/blob/master/res/score.PNG)
