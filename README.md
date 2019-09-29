@@ -1,6 +1,6 @@
 # ft_printf
 
-Made for UnitFactory's ft_printf project. My own implimantation if standart function printf()
+Made for UnitFactory's <b>ft_printf</b> project. My own implimantation if standart function printf()
 
 ## Description:
 
