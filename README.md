@@ -23,4 +23,4 @@ https://github.com/msaliuta/ft_printf.git
  ```
  
 ## Score:
-!(https://github.com/msaliuta/ft_printf/blob/master/res/score.PNG)
+![Score](https://github.com/msaliuta/ft_printf/blob/master/res/score.PNG)
